@@ -70,11 +70,9 @@ EDA → Preprocessing → Modeling → Evaluation → Submission.
 
 ## **Acknowledgments or References**
 
-* Kaggle Competition: *House Prices: Advanced Regression Techniques* — [https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques) ([Kaggle][1])
+* Kaggle Competition: *House Prices: Advanced Regression Techniques* — [https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques)
 * Data source: *Ames Housing Dataset* (included within Kaggle competition).
-* Inspiration and approaches from similar projects on GitHub and Kaggle discussion forums. ([GitHub][2])
+* Inspiration and approaches from similar projects on GitHub and Kaggle discussion forums.
 * Scikit-learn documentation for regression modeling.
-
----
 
 ****
