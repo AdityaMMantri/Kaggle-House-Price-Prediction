@@ -55,13 +55,13 @@ EDA → Preprocessing → Modeling → Evaluation → Submission.
 
 ---
 
-## **Example Outputs or Results** *(fill with your actual metrics)*
+## **Example Outputs or Results** 
+* To ensure comprehensive model evaluation, multiple algorithms were tested, such as Ridge and Lasso regression, Support Vector Machines with linear, polynomial, and RBF kernels, and LightGBM.
 
 | Model            | Validation RMSE | Kaggle Score |
 | ---------------- | --------------- | ------------ |
 | Net-Elastic+CatBoost+XGboost          | 0.91085           |0.11779     |
 | Net-Elastic+CatBoost          | 0.9061          | 0.11991        |
-
 
 * Example submissions are stored in the `Submissions` folder.
 * Hyperparameter tuning records are in `Hyper.xlsx`.
