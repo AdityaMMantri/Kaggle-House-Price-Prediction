@@ -1,6 +1,6 @@
 # **Description of the Project**
 
-This repository implements a machine learning solution to predict residential house sale prices using the *House Prices: Advanced Regression Techniques* dataset from Kaggle. The objective is to understand and model the complex relationships between the 79 available features and the final sale price of homes in Ames, Iowa. ([Kaggle][1])
+This repository implements a machine learning solution to predict residential house sale prices using the *House Prices: Advanced Regression Techniques* dataset from Kaggle. The objective is to understand and model the complex relationships between the 80 available features and the final sale price of homes in Ames, Iowa.
 
 This project includes data preprocessing, exploratory data analysis (EDA), feature engineering, model training and evaluation, hyperparameter tuning, and generation of Kaggle-ready submissions.
 
