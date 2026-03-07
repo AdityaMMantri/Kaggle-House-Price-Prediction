@@ -299,7 +299,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     # ── 13. One-hot encoding ──────────────────────────────────────────────────
     ohe_present = [c for c in ONEHOT_COLS if c in df.columns]
-    df = pd.get_dummies(df, columns=ohe_present, drop_first=True)
+    df = pd.get_dummies(df, columns=ohe_present, drop_first=False)
 
     # ── 14. Align with training feature columns ───────────────────────────────
     if feature_columns:

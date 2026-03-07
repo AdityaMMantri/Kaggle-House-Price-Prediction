@@ -3,11 +3,11 @@ import numpy as np
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 import streamlit as st
-from src.predictor import predict_with_breakdown
-from src.preprocessing import preprocess
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG  (must be first Streamlit call)
@@ -603,7 +603,7 @@ if page == "Predict Price":
                                 KitchenQual, ExterQual, CentralAir,
                             ],
                         }
-                        st.table(pd.DataFrame(summary_data))
+                        st.dataframe(pd.DataFrame(summary_data))
                     with st.expander("Show Model Feature Vector"):
                         from src.preprocessing import preprocess
 
