@@ -1,6 +1,13 @@
-import streamlit as st
 import pandas as pd
 import numpy as np
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+import streamlit as st
+from src.predictor import predict_with_breakdown
+from src.preprocessing import preprocess
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG  (must be first Streamlit call)

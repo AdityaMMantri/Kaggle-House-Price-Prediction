@@ -17,11 +17,16 @@ warnings.filterwarnings("ignore")
 # ─────────────────────────────────────────────
 # Load feature columns saved during training
 # ─────────────────────────────────────────────
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FEATURE_PATH = os.path.join(BASE_DIR, "models", "feature_columns.pkl")
+
 try:
-    feature_columns = joblib.load("models/feature_columns.pkl")
+    feature_columns = joblib.load(FEATURE_PATH)
 except FileNotFoundError:
     feature_columns = []
-    print("[WARNING] models/feature_columns.pkl not found – alignment step skipped.")
+    print(f"[WARNING] feature_columns.pkl not found at {FEATURE_PATH}")
 
 
 # ─────────────────────────────────────────────
