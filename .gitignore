@@ -1,13 +1,12 @@
 __pycache__/
 *.pyc
-*.pyo
-
 catboost_info/
 
 data/raw/*
 data/processed/*
 
 submissions/*
+*.csv
 
 .ipynb_checkpoints/
 .DS_Store
