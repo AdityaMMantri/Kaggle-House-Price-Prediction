@@ -9,13 +9,12 @@ import numpy as np
 import pandas as pd
 import os
 
-from preprocessing import preprocess
-
+from src.preprocessing import preprocess
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Load saved models
 # ─────────────────────────────────────────────────────────────────────────────
-MODEL_DIR = "Models_scaler"
+MODEL_DIR = "models"
 
 def _load(fname: str):
     path = os.path.join(MODEL_DIR, fname)

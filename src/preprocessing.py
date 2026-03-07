@@ -18,10 +18,10 @@ warnings.filterwarnings("ignore")
 # Load feature columns saved during training
 # ─────────────────────────────────────────────
 try:
-    feature_columns = joblib.load("Models_scaler/feature_columns.pkl")
+    feature_columns = joblib.load("models/feature_columns.pkl")
 except FileNotFoundError:
     feature_columns = []
-    print("[WARNING] feature_columns.pkl not found – alignment step will be skipped.")
+    print("[WARNING] models/feature_columns.pkl not found – alignment step skipped.")
 
 
 # ─────────────────────────────────────────────

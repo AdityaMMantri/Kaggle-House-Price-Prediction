@@ -91,7 +91,7 @@ thead tr th { background: var(--border) !important; }
 # ─────────────────────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner="Loading models…")
 def load_predictor():
-    from predictor import predict_with_breakdown
+    from src.predictor import predict_with_breakdown
     return predict_with_breakdown
 
 
@@ -598,7 +598,7 @@ if page == "Predict Price":
                         }
                         st.table(pd.DataFrame(summary_data))
                     with st.expander("Show Model Feature Vector"):
-                        from preprocessing import preprocess
+                        from src.preprocessing import preprocess
 
                         processed_df = preprocess(input_df)
 
