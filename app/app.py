@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+from data_viz import render_data_viz
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
@@ -27,7 +28,6 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* ── Root palette ─────────────────────────────────────────────────── */
 :root {
     --bg:       #0e1117;
     --surface:  #161b27;
@@ -42,53 +42,67 @@ st.markdown("""
     --red:      #f06060;
 }
 
-/* ── Base ─────────────────────────────────────────────────────────── */
 html, body, [data-testid="stAppViewContainer"] {
     background-color: var(--bg) !important;
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
 }
 
-/* ── Sidebar ──────────────────────────────────────────────────────── */
+/* Sidebar */
 [data-testid="stSidebar"] {
-    background: var(--surface) !important;
+    background: var(--surface);
     border-right: 1px solid var(--border);
 }
-[data-testid="stSidebar"] * { color: var(--text) !important; }
 
-/* ── Hide default header ──────────────────────────────────────────── */
-#MainMenu, footer, header { visibility: hidden; }
+/* Sidebar text fix */
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label {
+    color: var(--text);
+}
 
-/* ── Headings ─────────────────────────────────────────────────────── */
-h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
+/* DO NOT hide header */
+#MainMenu, footer { visibility: hidden; }
 
-/* ── Dividers ─────────────────────────────────────────────────────── */
-hr { border-color: var(--border) !important; margin: 1.5rem 0; }
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif !important;
+}
 
-/* ── Inputs ───────────────────────────────────────────────────────── */
+hr {
+    border-color: var(--border) !important;
+    margin: 1.5rem 0;
+}
+
 [data-testid="stNumberInput"] input,
 [data-testid="stSelectbox"] > div > div,
-[data-testid="stSlider"] { accent-color: var(--gold); }
+[data-testid="stSlider"] {
+    accent-color: var(--gold);
+}
 
-/* ── Expander ─────────────────────────────────────────────────────── */
 [data-testid="stExpander"] {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 10px;
 }
 
-/* ── Success / error boxes ────────────────────────────────────────── */
-[data-testid="stAlert"] { border-radius: 10px; }
+[data-testid="stAlert"] {
+    border-radius: 10px;
+}
 
-/* ── Tables ───────────────────────────────────────────────────────── */
 [data-testid="stTable"] table {
     background: var(--card);
     border-radius: 8px;
 }
-thead tr th { background: var(--border) !important; }
 
-/* ── Radio buttons (nav) ──────────────────────────────────────────── */
-[data-testid="stRadio"] label { font-size: 0.95rem; }
+thead tr th {
+    background: var(--border) !important;
+}
+
+/* Radio fix */
+[data-testid="stRadio"] label {
+    font-size: 0.95rem;
+    color: var(--text) !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -149,7 +163,7 @@ with st.sidebar:
 
     page = st.radio(
         "Navigate",
-        ["Predict Price", "Model Insights", "Feature Guide", "About"],
+        ["Predict Price","Data Visulization", "Model Insights", "Feature Guide", "About"],
         label_visibility="collapsed",
     )
 
@@ -1103,3 +1117,6 @@ elif page == "About":
         &nbsp;|&nbsp; For educational purposes
     </div>
     """, unsafe_allow_html=True)
+
+elif page=="Data Visulization":
+    render_data_viz()
