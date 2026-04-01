@@ -474,10 +474,17 @@ def render_data_viz():
 
             with r2c1:
                 max_top = min(n_unique, 20)
-                top_n = st.slider(
-                    "Top N categories", 2, max_top,
-                    min(10, max_top), key="cat_top_n"
-                )
+                if max_top<=2:
+                    top_n=max_top
+                    st.info(f"Only {max_top} categories available — showing all.")
+                else:
+                    top_n=st.slider(
+                        "Top N categories",
+                        2,
+                        max_top,
+                        min(10,max_top),
+                        key="cat_top_n"
+                    )
 
                 top_rows = vc_sorted.head(top_n).copy()
                 others_count = vc_sorted.iloc[top_n:]["Count"].sum()
