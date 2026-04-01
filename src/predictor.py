@@ -26,6 +26,20 @@ MODEL_LATENCY = get_metric(
     "Latency per model",
     ["model"]
 )
+
+MODEL_OUTPUT = get_metric(
+    "model_output_values",
+    Summary,
+    "Raw model predictions",
+    ["model"]
+)
+
+MODEL_DISAGREEMENT = get_metric(
+    "model_disagreement",
+    Summary,
+    "Variance between model predictions"
+)
+
 # ─────────────────────────────────────────────────────────────
 # Resolve absolute path to models directory
 # ─────────────────────────────────────────────────────────────
@@ -108,18 +122,30 @@ def predict_with_breakdown(raw_input_df: pd.DataFrame) -> dict:
     X = preprocess(raw_input_df)
     X_scaled = scaler.transform(X)
 
-    pred_enet = elasticnet.predict(X_scaled)
     start = time.time()
     pred_enet = elasticnet.predict(X_scaled)
     MODEL_LATENCY.labels("elasticnet").observe(time.time() - start)
+    MODEL_OUTPUT.labels("elasticnet").observe(pred_enet[0])
 
     start = time.time()
     pred_xgb = xgb.predict(X)
     MODEL_LATENCY.labels("xgboost").observe(time.time() - start)
+    MODEL_OUTPUT.labels("xgboost").observe(pred_xgb[0])
 
     start = time.time()
     pred_cat = cat.predict(X)
     MODEL_LATENCY.labels("catboost").observe(time.time() - start)
+    MODEL_OUTPUT.labels("catboost").observe(pred_cat[0])
+
+    preds = np.array([
+        pred_enet[0],
+        pred_xgb[0],
+        pred_cat[0]
+    ])
+
+    disagreement = np.std(preds)
+
+    MODEL_DISAGREEMENT.observe(disagreement)
 
     X_meta   = np.column_stack([pred_enet, pred_xgb, pred_cat])
     start = time.time()
