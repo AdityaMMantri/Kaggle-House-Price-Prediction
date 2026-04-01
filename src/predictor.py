@@ -10,10 +10,22 @@ import joblib
 import numpy as np
 import pandas as pd
 import os
+import time
+from prometheus_client import Summary, REGISTRY
 
 from src.preprocessing import preprocess
 
+def get_metric(name, cls, *args):
+    if name in REGISTRY._names_to_collectors:
+        return REGISTRY._names_to_collectors[name]
+    return cls(name, *args)
 
+MODEL_LATENCY = get_metric(
+    "model_latency_seconds",
+    Summary,
+    "Latency per model",
+    ["model"]
+)
 # ─────────────────────────────────────────────────────────────
 # Resolve absolute path to models directory
 # ─────────────────────────────────────────────────────────────
@@ -61,13 +73,23 @@ def predict_price(raw_input_df: pd.DataFrame) -> np.ndarray:
     X_scaled = scaler.transform(X)
 
     # Step 3 — base models
+    start = time.time()
     pred_enet = elasticnet.predict(X_scaled)
-    pred_xgb  = xgb.predict(X)
-    pred_cat  = cat.predict(X)
+    MODEL_LATENCY.labels("elasticnet").observe(time.time() - start)
+    
+    start = time.time()
+    pred_xgb = xgb.predict(X)
+    MODEL_LATENCY.labels("xgboost").observe(time.time() - start)
+
+    start = time.time()
+    pred_cat = cat.predict(X)
+    MODEL_LATENCY.labels("catboost").observe(time.time() - start)
 
     # Step 4 — stacking
     X_meta   = np.column_stack([pred_enet, pred_xgb, pred_cat])
+    start = time.time()
     pred_log = meta_model.predict(X_meta)
+    MODEL_LATENCY.labels("meta_model").observe(time.time() - start)
 
     # Step 5 — reverse log transform
     final_price = np.expm1(pred_log)
@@ -87,11 +109,23 @@ def predict_with_breakdown(raw_input_df: pd.DataFrame) -> dict:
     X_scaled = scaler.transform(X)
 
     pred_enet = elasticnet.predict(X_scaled)
-    pred_xgb  = xgb.predict(X)
-    pred_cat  = cat.predict(X)
+    start = time.time()
+    pred_enet = elasticnet.predict(X_scaled)
+    MODEL_LATENCY.labels("elasticnet").observe(time.time() - start)
+
+    start = time.time()
+    pred_xgb = xgb.predict(X)
+    MODEL_LATENCY.labels("xgboost").observe(time.time() - start)
+
+    start = time.time()
+    pred_cat = cat.predict(X)
+    MODEL_LATENCY.labels("catboost").observe(time.time() - start)
 
     X_meta   = np.column_stack([pred_enet, pred_xgb, pred_cat])
+    start = time.time()
     pred_log = meta_model.predict(X_meta)
+    MODEL_LATENCY.labels("meta_model").observe(time.time() - start)
+    #pred_log = meta_model.predict(X_meta)
 
     return {
         "final":      float(np.expm1(pred_log[0])),

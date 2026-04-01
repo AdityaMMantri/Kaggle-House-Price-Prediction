@@ -3,12 +3,83 @@ import numpy as np
 import sys
 import os
 from data_viz import render_data_viz
+from prometheus_client import start_http_server,Counter, Summary,REGISTRY,Histogram
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 import streamlit as st
+
+def get_metric(name, cls, *args):
+    if name in REGISTRY._names_to_collectors:
+        return REGISTRY._names_to_collectors[name]
+    return cls(name, *args)
+
+def get_histogram(name, documentation, buckets, labelnames=None):
+    if name in REGISTRY._names_to_collectors:
+        old_metric = REGISTRY._names_to_collectors[name]
+
+        # REMOVE old broken metric
+        try:
+            REGISTRY.unregister(old_metric)
+        except:
+            pass
+
+    return Histogram(
+        name,
+        documentation,
+        buckets=buckets,
+        labelnames=labelnames or []
+    )
+
+REQUEST_COUNT = get_metric(
+    "app_requests_total",
+    Counter,
+    "Total number of prediction requests"
+)
+
+PREDICTION_LATENCY = get_metric(
+    "prediction_latency_seconds",
+    Summary,
+    "Time spent on prediction"
+)
+
+ERROR_COUNT = get_metric(
+    "app_errors_total",
+    Counter,
+    "Total number of prediction errors"
+)
+
+REQUESTS_BY_STATUS = get_metric(
+    "requests_by_status",
+    Counter,
+    "Requests by status",
+    ["status"]
+)
+
+PREDICTION_VALUES = get_histogram(
+    "prediction_values",
+    "Distribution of predicted prices",
+    buckets=[50000,100000,150000,200000,300000,500000,1000000]
+)
+
+INPUT_FEATURE_DISTRIBUTION = get_histogram(
+    "input_feature_distribution",
+    "Distribution of important input features",
+    buckets=[0,500,1000,2000,5000,10000,20000,50000],
+    labelnames=["feature"]
+)
+
+import threading
+
+def start_metrics_server():
+    start_http_server(8000)
+
+if "metrics_thread" not in st.session_state:
+    thread = threading.Thread(target=start_metrics_server, daemon=True)
+    thread.start()
+    st.session_state["metrics_thread"] = True
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG  (must be first Streamlit call)
@@ -567,9 +638,34 @@ if page == "Predict Price":
                         "SaleType":      SaleType,
                         "SaleCondition": SaleCondition,
                     }])
+                    import time
+                    start = time.time()
+                    st.write("METRIC TRIGGERED")
+
+                    # ─── METRICS START ───
+                    REQUEST_COUNT.inc()
+                    
+                    # track input distribution (MULTI FEATURE)
+                    INPUT_FEATURE_DISTRIBUTION.labels("GrLivArea").observe(GrLivArea)
+                    INPUT_FEATURE_DISTRIBUTION.labels("TotalBsmtSF").observe(TotalBsmtSF)
+                    INPUT_FEATURE_DISTRIBUTION.labels("GarageCars").observe(GarageCars)
+                    INPUT_FEATURE_DISTRIBUTION.labels("TotRmsAbvGrd").observe(TotRmsAbvGrd)
+                    INPUT_FEATURE_DISTRIBUTION.labels("LotArea").observe(LotArea)
+                    INPUT_FEATURE_DISTRIBUTION.labels("GarageArea").observe(GarageArea)
+                    INPUT_FEATURE_DISTRIBUTION.labels("LotFrontage").observe(LotFrontage)
+
 
                     result = predict_fn(input_df)
+
+                    latency = time.time() - start
+                    PREDICTION_LATENCY.observe(latency)
+                    st.write("Counter:", REQUEST_COUNT._value.get())
                     price  = result["final"]
+
+                    # ─── OUTPUT METRIC ───
+                    PREDICTION_VALUES.observe(price)
+                    REQUESTS_BY_STATUS.labels("success").inc()
+                    
 
                     # ── RESULT DISPLAY ────────────────────────────────────────
                     st.markdown("<br/>", unsafe_allow_html=True)
@@ -628,8 +724,12 @@ if page == "Predict Price":
                         st.dataframe(processed_df)
 
                 except FileNotFoundError as e:
+                    ERROR_COUNT.inc()
+                    REQUESTS_BY_STATUS.labels("error").inc()
                     st.error(f"**Model files not found.**\n\n{e}")
                 except Exception as e:
+                    ERROR_COUNT.inc()
+                    REQUESTS_BY_STATUS.labels("error").inc()
                     st.error(f"**Prediction failed:** {e}")
                     st.exception(e)
 
