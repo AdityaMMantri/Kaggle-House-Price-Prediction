@@ -224,7 +224,7 @@ def render_data_viz():
             with r1c2:
                 fig_violin = px.violin(
                     df,
-                    y=series,
+                    y=feature,
                     box=True,
                     points="outliers",
                     title=f"Violin Plot — {label}",
