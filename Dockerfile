@@ -1,5 +1,5 @@
 # Use lightweight Python image
-FROM python:3.10-slim
+FROM python:3.10-bullseye
 
 # Prevent Python from buffering logs
 ENV PYTHONUNBUFFERED=1
