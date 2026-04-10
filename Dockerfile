@@ -1,32 +1,27 @@
-# Use lightweight Python image
-FROM python:3.10-bullseye
+FROM python:3.11-slim
 
-# Prevent Python from buffering logs
 ENV PYTHONUNBUFFERED=1
+ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+ENV STREAMLIT_SERVER_HEADLESS=true
+ENV PYTHONPATH=/app         
 
-# Set working directory inside container
 WORKDIR /app
 
-# Install system dependencies required by ML libs
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
+    build-essential gcc g++ libgomp1 curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for caching
 COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Upgrade pip + install dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-# Copy full project
 COPY . .
 
-# Expose Streamlit and Prometheus ports
+RUN mkdir -p /root/.streamlit /tmp/streamlit_cache
+
 EXPOSE 8501
 EXPOSE 8000
 
-# Start Streamlit App
-CMD ["streamlit", "run", "app/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "app/app.py", \
+     "--server.port=8501", \
+     "--server.address=0.0.0.0", \
+     "--server.headless=true"]

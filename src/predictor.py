@@ -92,7 +92,7 @@ def predict_price(raw_input_df: pd.DataFrame) -> np.ndarray:
     MODEL_LATENCY.labels("elasticnet").observe(time.time() - start)
     
     start = time.time()
-    pred_xgb = xgb.predict(X)
+    pred_xgb = xgb.predict(X.values)
     MODEL_LATENCY.labels("xgboost").observe(time.time() - start)
 
     start = time.time()
@@ -128,7 +128,7 @@ def predict_with_breakdown(raw_input_df: pd.DataFrame) -> dict:
     MODEL_OUTPUT.labels("elasticnet").observe(pred_enet[0])
 
     start = time.time()
-    pred_xgb = xgb.predict(X)
+    pred_xgb = xgb.predict(X.values)
     MODEL_LATENCY.labels("xgboost").observe(time.time() - start)
     MODEL_OUTPUT.labels("xgboost").observe(pred_xgb[0])
 
