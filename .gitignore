@@ -5,3 +5,6 @@ catboost_info/
 submissions/*
 .ipynb_checkpoints/
 .DS_Store
+prometheus/data/
+prometheus/*.exe
+prometheus/*.log
