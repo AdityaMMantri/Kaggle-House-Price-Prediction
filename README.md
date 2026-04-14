@@ -52,12 +52,12 @@ Accurate real estate price estimation is a high-value, data-rich problem influen
 ### System Workflow
 
 ```
-User Input (Streamlit UI)
-           │
-           ▼
- Feature Preprocessing (src/)
-           │
-           ▼
+     User Input (Streamlit UI)
+                 │
+                 ▼
+    Feature Preprocessing (src/)
+                 │
+                 ▼
 ┌──────────────────────────────────┐
 │       Stacked Ensemble Model     │
 │                                  │
@@ -70,21 +70,21 @@ User Input (Streamlit UI)
 │                │                 │
 │    Meta-Model (Stacker)          │
 └──────────────────────────────────┘
-           │
-           ▼
- Predicted Sale Price (USD)
-           │
-           ▼
- Prometheus /metrics endpoint (port 8000)
-           │
-           ▼
- Grafana Dashboard (port 3000)
+                 │
+                 ▼
+     Predicted Sale Price (USD)
+                 │
+                 ▼
+Prometheus /metrics endpoint (port 8000)
+                 │
+                 ▼
+    Grafana Dashboard (port 3000)
 ```
 
 ### DevOps Pipeline Overview
 
 ```
-git push ──► GitHub ──► Jenkins (Webhook)
+           git push ──► GitHub ──► Jenkins (Webhook)
                               │
                  ┌────────────▼─────────────┐
                  │                          │
@@ -156,7 +156,7 @@ python --version
 # Expected: Python 3.10.x  or  Python 3.11.x
 ```
 
-> All the mentioned software are required to successfully run the repository. You can download them by clicking the respective application logos provided in the description section above.
+> ⚠️ All the mentioned software are required to successfully run the repository. You can download them by clicking the respective application logos provided in the description section above.
 
 ---
 
