@@ -178,21 +178,29 @@ cd Kaggle-House-Price-Prediction
 **Required Plugins:** Build Timeout, Docker Pipeline, Docker Plugin, Git, Git Client, GitHub Plugin, GitHub Integration Plugin, Pipeline Graph Analysis Plugin, Prometheus Metrics Plugin.
 
 Step 1: In Jenkins, create a **New Item** and select **Pipeline** as the project type.
+
 Step 2: Under the build trigger settings, configure the pipeline to trigger **from SCM**.
+
 Step 3: Select **Git** and paste the repository URL:
    ```
    https://github.com/AdityaMMantri/Kaggle-House-Price-Prediction.git
    ```
+
 Step 4: Change the branch from `master` to `main`.
+
 Step 5: Click **Save**, then click **Build Now** to trigger the pipeline.
+
 Step 6: Once the build completes, open the following in your browser:
    - Streamlit Dashboard: `http://localhost:8501`
    - Prometheus Metrics: `http://localhost:8000`
+
 Step 7: Copy the `prometheus.yml` file from the repository and paste it into your local Prometheus installation directory, replacing the existing configuration file.
+
 Step 8: Navigate to your Prometheus installation directory and run the following command:
    ```bash
    ./prometheus.exe --config.file=prometheus.yml
    ```
+
 Step 9: Open `http://localhost:9090/targets` — you should see **3 endpoints** with status **UP**.
 
 ---
@@ -200,25 +208,33 @@ Step 9: Open `http://localhost:9090/targets` — you should see **3 endpoints** 
 #### Method 2: Using Docker
 
 Step 1: Open **Docker Desktop** and ensure the Docker daemon is running.
+
 Step 2: Navigate to the cloned repository folder and open the `Kaggle-House-Price-Prediction` directory.
+
 Step 3: Open a command prompt in that directory.
+
 Step 4: Build the Docker image by running:
    ```bash
    docker build -t streamlit_final_check .
    ```
+
 Step 5: Start the container by running:
    ```bash
    docker run -d --name house-price-container2 -p 8502:8501 -p 8000:8000 streamlit_final_check
    ```
+
 Step 6: Open the Streamlit dashboard in your browser at:
    ```
    http://localhost:8502
    ```
+
 Step 7: Copy the `prometheus.yml` file from the repository and paste it into your local Prometheus installation directory, replacing the existing configuration file.
+
 Step 8: Navigate to your Prometheus installation directory and run the following command:
    ```bash
    ./prometheus.exe --config.file=prometheus.yml
    ```
+
 Step 9: Open `http://localhost:9090/targets` — you should see **3 endpoints** with status **UP**.
 
 ---
@@ -226,24 +242,31 @@ Step 9: Open `http://localhost:9090/targets` — you should see **3 endpoints** 
 #### Method 3: Using Streamlit
 
 Step 1: Navigate to the cloned repository folder and open the `Kaggle-House-Price-Prediction` directory.
+
 Step 2: Open a command prompt in that directory.
+
 Step 3: Install all required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
+
 Step 4: Launch the Streamlit application:
    ```bash
    streamlit run app/app.py
    ```
+
 Step 5: Open the Streamlit dashboard in your browser at:
    ```
    http://localhost:8501
    ```
+
 Step 6: Copy the `prometheus.yml` file from the repository and paste it into your local Prometheus installation directory, replacing the existing configuration file.
+
 Step 7: Navigate to your Prometheus installation directory and run the following command:
    ```bash
    ./prometheus.exe --config.file=prometheus.yml
    ```
+
 Step 8: Open `http://localhost:9090/targets` — you should see **3 endpoints** with status **UP**.
 
 ---
